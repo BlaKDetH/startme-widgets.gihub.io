@@ -1,0 +1,469 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Start</title>
+  <style>
+    :root{
+      --bg:#0b0f14; --panel:rgba(255,255,255,.06); --panel2:rgba(255,255,255,.10);
+      --text:#e8eef6; --muted:rgba(232,238,246,.7); --border:rgba(255,255,255,.10);
+      --shadow:0 20px 60px rgba(0,0,0,.45); --radius:18px; --accent:#7aa2f7;
+      --mono:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono",monospace;
+      --sans:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      --chip:#101826;
+    }
+    [data-theme="light"]{
+      --bg:#f6f7fb; --panel:rgba(0,0,0,.05); --panel2:rgba(0,0,0,.08);
+      --text:#121826; --muted:rgba(18,24,38,.65); --border:rgba(0,0,0,.10);
+      --shadow:0 18px 50px rgba(0,0,0,.12); --accent:#3b82f6; --chip:#eaf0ff;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; color:var(--text);
+      background:
+        radial-gradient(1200px 700px at 15% 20%, rgba(122,162,247,0.18), transparent 55%),
+        radial-gradient(1000px 600px at 85% 70%, rgba(158,206,106,0.10), transparent 60%),
+        var(--bg);
+      font-family:var(--sans);
+      display:flex; align-items:center; justify-content:center;
+      padding:28px;
+    }
+     .wrap{
+      width:min(1100px, 100%);
+      display:grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
+      gap: 18px;
+    }
+    .top{
+      padding:18px 18px 12px;
+      display:flex; gap:12px; align-items:center; justify-content:space-between;
+      border-bottom:1px solid var(--border);
+    }
+    .title{display:flex; flex-direction:column; gap:2px; min-width:0;}
+    .clock{font-family:var(--mono); font-size:28px; letter-spacing:.5px; line-height:1.1; white-space:nowrap;}
+    .date{color:var(--muted); font-size:13px; white-space:nowrap;}
+    .actions{display:flex; gap:10px; align-items:center;}
+    .pill{
+      display:inline-flex; align-items:center; gap:8px; padding:8px 10px; border-radius:999px;
+      background:var(--panel2); border:1px solid var(--border); color:var(--text); font-size:13px;
+      cursor:pointer; user-select:none;
+    }
+    .pill:hover{border-color:rgba(255,255,255,.18)}
+    [data-theme="light"] .pill:hover{border-color:rgba(0,0,0,.18)}
+
+    .main{padding:16px 18px 18px; display:flex; flex-direction:column; gap:14px;}
+    .searchRow{display:flex; gap:10px; align-items:center;}
+    .search{
+      flex:1; display:flex; gap:10px; align-items:center;
+      padding:12px 14px; border-radius:14px;
+      background:rgba(0,0,0,.18); border:1px solid var(--border);
+    }
+    [data-theme="light"] .search{background:rgba(255,255,255,.65)}
+    .search input{
+      flex:1; background:transparent; border:0; outline:none; color:var(--text);
+      font-size:16px; font-family:var(--sans);
+    }
+    .search input::placeholder{color:var(--muted)}
+    .engine{
+      border:1px solid var(--border); background:transparent; color:var(--text);
+      border-radius:12px; padding:10px 10px; outline:none; cursor:pointer;
+    }
+    .go{
+      padding:10px 14px; border-radius:12px; border:1px solid var(--border);
+      background:var(--accent); color:#0b0f14; font-weight:800; cursor:pointer;
+    }
+    [data-theme="light"] .go{color:#fff}
+    .hint{color:var(--muted); font-size:12px; font-family:var(--mono); display:flex; gap:10px; flex-wrap:wrap;}
+    .chip{
+      background:var(--chip); border:1px solid var(--border); border-radius:999px;
+      padding:4px 8px; font-family:var(--mono); font-size:12px; color:var(--muted);
+    }
+
+    .tabs{display:flex; gap:8px; flex-wrap:wrap;}
+    .tab{
+      padding:8px 10px; border-radius:999px; border:1px solid var(--border);
+      background:rgba(0,0,0,.14); cursor:pointer; font-family:var(--mono); font-size:12px; color:var(--muted);
+      user-select:none;
+    }
+    [data-theme="light"] .tab{background:rgba(255,255,255,.55)}
+    .tab.active{color:var(--text); border-color:rgba(255,255,255,.22)}
+    [data-theme="light"] .tab.active{border-color:rgba(0,0,0,.22)}
+
+    .grid{display:grid; grid-template-columns:repeat(4,1fr); gap:10px;}
+    .link{
+      text-decoration:none; color:var(--text); padding:12px 12px; border-radius:14px;
+      background:rgba(0,0,0,.16); border:1px solid var(--border);
+      display:flex; flex-direction:column; gap:6px; min-height:64px;
+    }
+    [data-theme="light"] .link{background:rgba(255,255,255,.60)}
+    .link:hover{transform:translateY(-1px)}
+    .name{font-weight:700; font-size:14px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+    .url{font-size:12px; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; font-family:var(--mono);}
+
+    .side{display:flex; flex-direction:column; height:100%;}
+    .sideBody{padding:16px 18px 18px; display:flex; flex-direction:column; gap:12px;}
+    .sectionTitle{
+      display:flex; justify-content:space-between; align-items:center; gap:12px;
+      font-size:13px; color:var(--muted); font-family:var(--mono);
+      text-transform:uppercase; letter-spacing:.08em;
+    }
+    textarea{
+      width:100%; min-height: 120px; resize:vertical;
+      border-radius:14px; border:1px solid var(--border);
+      background:rgba(0,0,0,.16); color:var(--text); padding:12px; outline:none;
+      font-family:var(--mono); font-size:13px; line-height:1.4;
+    }
+    [data-theme="light"] textarea{background:rgba(255,255,255,.6)}
+    .kv{display:grid; grid-template-columns: 1fr 1fr; gap:10px;}
+    .kv input{
+      width:100%; border-radius:12px; border:1px solid var(--border);
+      background:rgba(0,0,0,.16); color:var(--text);
+      padding:10px 10px; outline:none; font-family:var(--mono); font-size:13px;
+    }
+    [data-theme="light"] .kv input{background:rgba(255,255,255,.6)}
+
+    .cmds{display:flex; flex-direction:column; gap:8px;}
+    .cmdRow{
+      display:flex; gap:8px; align-items:center;
+      border:1px solid var(--border); background:rgba(0,0,0,.14);
+      padding:10px; border-radius:14px;
+    }
+    [data-theme="light"] .cmdRow{background:rgba(255,255,255,.55)}
+    .cmdText{flex:1; font-family:var(--mono); font-size:12px; color:var(--muted); overflow:hidden; white-space:nowrap; text-overflow:ellipsis;}
+    .btn{
+      border-radius:12px; border:1px solid var(--border);
+      background:var(--panel2); color:var(--text); padding:8px 10px; cursor:pointer; font-weight:700;
+    }
+    .btn:hover{filter:brightness(1.05)}
+    .footerHint{
+      padding:12px 18px 16px; border-top:1px solid var(--border);
+      color:var(--muted); font-family:var(--mono); font-size:12px;
+      display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap;
+    }
+    @media (max-width: 980px){ .wrap{grid-template-columns:1fr;} .grid{grid-template-columns:repeat(2,1fr);} }
+    @media (max-width: 520px){ .grid{grid-template-columns:1fr;} .clock{font-size:24px;} .kv{grid-template-columns:1fr;} }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <!-- LEFT -->
+    <div class="card">
+      <div class="top">
+        <div class="title">
+          <div class="clock" id="clock">--:--:--</div>
+          <div class="date" id="date">---</div>
+        </div>
+        <div class="actions">
+          <div class="pill" id="editLinksBtn" title="Edit quick links (JSON)">✎ Links</div>
+          <div class="pill" id="themeBtn" title="Toggle theme (t)">☾ Theme</div>
+        </div>
+      </div>
+
+      <div class="main">
+        <div class="searchRow">
+          <div class="search">
+            <input id="q" placeholder="Search or type a URL… (press / to focus)" autocomplete="off" />
+            <select id="engine" class="engine" title="Search engine">
+              <option value="duckduckgo">DuckDuckGo</option>
+              <option value="google">Google</option>
+              <option value="bing">Bing</option>
+              <option value="kagi">Kagi</option>
+              <option value="custom">Custom</option>
+            </select>
+          </div>
+          <button class="go" id="goBtn">Go</button>
+        </div>
+
+        <div class="hint">
+          <span class="chip">/ focus</span>
+          <span class="chip">t theme</span>
+          <span class="chip">c clear</span>
+          <span class="chip">Shift+Enter new tab</span>
+        </div>
+
+        <div class="tabs" id="tabs"></div>
+        <div class="grid" id="linksGrid"></div>
+      </div>
+
+      <div class="footerHint">
+        <span><b>/</b> focus · <b>t</b> theme · <b>c</b> clear · <b>Shift+Enter</b> search new tab</span>
+        <span id="status">localStorage: OK</span>
+      </div>
+    </div>
+
+    <!-- RIGHT -->
+    <div class="card side">
+      <div class="top">
+        <div class="title">
+          <div style="font-family:var(--mono);font-weight:800;">Target Box</div>
+          <div class="date">Scope + one-liners saved locally</div>
+        </div>
+        <div class="actions">
+          <div class="pill" id="wipeBtn" title="Clear target box">🧹 Wipe</div>
+        </div>
+      </div>
+
+      <div class="sideBody">
+        <div>
+          <div class="sectionTitle"><span>TARGET</span><span>autosave</span></div>
+          <div class="kv">
+            <input id="targetHost" placeholder="Host/IP (e.g. 10.10.10.10)" />
+            <input id="targetName" placeholder="Name (e.g. HTB: Optimum)" />
+          </div>
+        </div>
+
+        <div class="cmds">
+          <div class="sectionTitle"><span>QUICK COMMANDS</span><span>copy</span></div>
+
+          <div class="cmdRow">
+            <div class="cmdText" id="cmdNmap">nmap -sC -sV -oN nmap.txt TARGET</div>
+            <button class="btn" data-copy="cmdNmap">Copy</button>
+          </div>
+
+          <div class="cmdRow">
+            <div class="cmdText" id="cmdRustscan">rustscan -a TARGET -- -sC -sV -oN nmap.txt</div>
+            <button class="btn" data-copy="cmdRustscan">Copy</button>
+          </div>
+
+          <div class="cmdRow">
+            <div class="cmdText" id="cmdGobuster">gobuster dir -u http://TARGET -w /usr/share/wordlists/dirb/common.txt -x php,txt,html</div>
+            <button class="btn" data-copy="cmdGobuster">Copy</button>
+          </div>
+
+          <div class="cmdRow">
+            <div class="cmdText" id="cmdFfuf">ffuf -u http://TARGET/FUZZ -w /usr/share/seclists/Discovery/Web-Content/common.txt</div>
+            <button class="btn" data-copy="cmdFfuf">Copy</button>
+          </div>
+        </div>
+
+        <div>
+          <div class="sectionTitle"><span>SCOPE / NOTES</span><span>autosave</span></div>
+          <textarea id="notes" placeholder="Scope, creds, endpoints, findings, reminders…"></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const $ = (id) => document.getElementById(id);
+    const store = {
+      get(k, fallback){ try { return JSON.parse(localStorage.getItem(k)) ?? fallback; } catch { return fallback; } },
+      set(k, v){ localStorage.setItem(k, JSON.stringify(v)); },
+      del(k){ localStorage.removeItem(k); }
+    };
+
+    function escapeHtml(s){
+      return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+    }
+    function isProbablyUrl(s){
+      if(!s) return false;
+      if(/^https?:\/\//i.test(s)) return true;
+      if(/^(localhost|\d{1,3}(\.\d{1,3}){3})(:\d+)?(\/.*)?$/i.test(s)) return true;
+      if(/^[a-z0-9-]+(\.[a-z0-9-]+)+(:\d+)?(\/.*)?$/i.test(s)) return true;
+      return false;
+    }
+    function engineUrl(engine, query){
+      const q = encodeURIComponent(query);
+      const custom = store.get("custom_engine", "https://duckduckgo.com/?q=%s");
+      switch(engine){
+        case "google": return `https://www.google.com/search?q=${q}`;
+        case "bing": return `https://www.bing.com/search?q=${q}`;
+        case "kagi": return `https://kagi.com/search?q=${q}`;
+        case "custom": return custom.replace("%s", q);
+        default: return `https://duckduckgo.com/?q=${q}`;
+      }
+    }
+
+    // clock
+    function tick(){
+      const d=new Date(), pad=n=>String(n).padStart(2,"0");
+      $("clock").textContent = `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+      $("date").textContent = d.toLocaleDateString(undefined,{weekday:"long",year:"numeric",month:"short",day:"numeric"});
+    }
+    setInterval(tick,250); tick();
+
+    // theme
+    function applyTheme(t){
+      document.documentElement.setAttribute("data-theme", t);
+      store.set("theme", t);
+      $("themeBtn").textContent = (t==="light") ? "☼ Theme" : "☾ Theme";
+    }
+    applyTheme(store.get("theme","dark"));
+    $("themeBtn").addEventListener("click", () => {
+      const cur = store.get("theme","dark");
+      applyTheme(cur==="dark" ? "light" : "dark");
+    });
+
+    // links by category
+    const defaultLinks = [
+      { cat:"Recon", name:"Shodan", url:"https://www.shodan.io/" },
+      { cat:"Recon", name:"Censys", url:"https://search.censys.io/" },
+      { cat:"Recon", name:"crt.sh", url:"https://crt.sh/" },
+      { cat:"Recon", name:"VirusTotal", url:"https://www.virustotal.com/" },
+
+      { cat:"Web", name:"PortSwigger Web Sec Academy", url:"https://portswigger.net/web-security" },
+      { cat:"Web", name:"PayloadsAllTheThings", url:"https://github.com/swisskyrepo/PayloadsAllTheThings" },
+      { cat:"Web", name:"SecLists", url:"https://github.com/danielmiessler/SecLists" },
+      { cat:"Web", name:"HackTricks", url:"https://book.hacktricks.xyz/" },
+
+      { cat:"Exploit", name:"Exploit-DB", url:"https://www.exploit-db.com/" },
+      { cat:"Exploit", name:"GTFOBins", url:"https://gtfobins.github.io/" },
+      { cat:"Exploit", name:"LOLBA", url:"https://lolbas-project.github.io/" },
+      { cat:"Exploit", name:"NVD", url:"https://nvd.nist.gov/" },
+
+      { cat:"Labs", name:"Hack The Box", url:"https://app.hackthebox.com/" },
+      { cat:"Labs", name:"HTB Academy", url:"https://academy.hackthebox.com/" },
+      { cat:"Labs", name:"TryHackMe", url:"https://tryhackme.com/" },
+      { cat:"Labs", name:"OverTheWire", url:"https://overthewire.org/wargames/" },
+
+      { cat:"Ops", name:"Proton Mail", url:"https://mail.proton.me/" },
+      { cat:"Ops", name:"GitHub", url:"https://github.com/" },
+      { cat:"Ops", name:"Tailscale", url:"https://login.tailscale.com/" },
+      { cat:"Ops", name:"Pastebin", url:"https://pastebin.com/" },
+
+      { cat:"Docs", name:"OWASP Top 10", url:"https://owasp.org/www-project-top-ten/" },
+      { cat:"Docs", name:"MITRE ATT&CK", url:"https://attack.mitre.org/" },
+      { cat:"Docs", name:"Nmap Book", url:"https://nmap.org/book/man.html" },
+      { cat:"Docs", name:"Linux manpages", url:"https://man7.org/linux/man-pages/" }
+    ];
+
+    function categories(links){
+      return Array.from(new Set(links.map(x=>x.cat))).sort();
+    }
+
+    function renderTabs(){
+      const links = store.get("quick_links", defaultLinks);
+      const cats = categories(links);
+      const active = store.get("active_cat", cats[0] || "All");
+      const wrap = $("tabs");
+      wrap.innerHTML = "";
+      cats.forEach(cat => {
+        const el = document.createElement("div");
+        el.className = "tab" + (cat===active ? " active" : "");
+        el.textContent = cat;
+        el.addEventListener("click", () => { store.set("active_cat", cat); renderTabs(); renderLinks(); });
+        wrap.appendChild(el);
+      });
+      if(!cats.includes(active) && cats[0]) store.set("active_cat", cats[0]);
+    }
+
+    function renderLinks(){
+      const links = store.get("quick_links", defaultLinks);
+      const active = store.get("active_cat", categories(links)[0] || "Recon");
+      const grid = $("linksGrid");
+      grid.innerHTML = "";
+      links.filter(l => l.cat === active).forEach(l => {
+        const a = document.createElement("a");
+        a.className = "link";
+        a.href = l.url;
+        a.innerHTML = `<div class="name">${escapeHtml(l.name)}</div><div class="url">${escapeHtml(l.url)}</div>`;
+        grid.appendChild(a);
+      });
+    }
+
+    $("editLinksBtn").addEventListener("click", () => {
+      const current = store.get("quick_links", defaultLinks);
+      const txt = prompt(
+        "Edit links as JSON array (cat/name/url). Example:\n" +
+        '[{"cat":"Recon","name":"Shodan","url":"https://www.shodan.io/"}]',
+        JSON.stringify(current, null, 2)
+      );
+      if(txt === null) return;
+      try{
+        const parsed = JSON.parse(txt);
+        if(!Array.isArray(parsed)) throw new Error("Not an array");
+        parsed.forEach(x => {
+          if(!x.cat || !x.name || !x.url) throw new Error("Each item needs cat, name, url");
+        });
+        store.set("quick_links", parsed);
+        renderTabs(); renderLinks();
+      }catch(e){
+        alert("Invalid JSON: " + e.message);
+      }
+    });
+
+    renderTabs(); renderLinks();
+
+    // search
+    function go(openNewTab=false){
+      const q = $("q").value.trim();
+      const engine = $("engine").value;
+      if(!q) return;
+      let url;
+      if(isProbablyUrl(q)) url = /^https?:\/\//i.test(q) ? q : "https://" + q;
+      else url = engineUrl(engine, q);
+      if(openNewTab) window.open(url, "_blank", "noopener");
+      else window.location.href = url;
+    }
+    $("goBtn").addEventListener("click", ()=>go(false));
+    $("q").addEventListener("keydown", (e)=>{
+      if(e.key === "Enter" && e.shiftKey) go(true);
+      else if(e.key === "Enter") go(false);
+    });
+    $("engine").addEventListener("change", ()=>{
+      if($("engine").value === "custom"){
+        const cur = store.get("custom_engine", "https://duckduckgo.com/?q=%s");
+        const next = prompt("Custom engine URL (use %s where query goes):", cur);
+        if(next && next.includes("%s")) store.set("custom_engine", next);
+      }
+    });
+
+    // target box autosave
+    $("targetHost").value = store.get("target_host", "");
+    $("targetName").value = store.get("target_name", "");
+    $("notes").value = store.get("target_notes", "");
+    $("targetHost").addEventListener("input", ()=>store.set("target_host", $("targetHost").value));
+    $("targetName").addEventListener("input", ()=>store.set("target_name", $("targetName").value));
+    $("notes").addEventListener("input", ()=>store.set("target_notes", $("notes").value));
+
+    function refreshCmds(){
+      const t = ($("targetHost").value || "TARGET").trim();
+      $("cmdNmap").textContent = `nmap -sC -sV -oN nmap.txt ${t}`;
+      $("cmdRustscan").textContent = `rustscan -a ${t} -- -sC -sV -oN nmap.txt`;
+      $("cmdGobuster").textContent = `gobuster dir -u http://${t} -w /usr/share/wordlists/dirb/common.txt -x php,txt,html`;
+      $("cmdFfuf").textContent = `ffuf -u http://${t}/FUZZ -w /usr/share/seclists/Discovery/Web-Content/common.txt`;
+    }
+    $("targetHost").addEventListener("input", refreshCmds);
+    refreshCmds();
+
+    document.querySelectorAll("[data-copy]").forEach(btn=>{
+      btn.addEventListener("click", async ()=>{
+        const id = btn.getAttribute("data-copy");
+        const text = $(id).textContent;
+        try{
+          await navigator.clipboard.writeText(text);
+          btn.textContent = "Copied";
+          setTimeout(()=>btn.textContent="Copy", 800);
+        }catch{
+          alert("Clipboard blocked. Try HTTPS pages or allow clipboard permissions.");
+        }
+      });
+    });
+
+    // wipe
+    $("wipeBtn").addEventListener("click", ()=>{
+      if(confirm("Clear Target Box fields?")){
+        ["target_host","target_name","target_notes"].forEach(k=>store.del(k));
+        $("targetHost").value=""; $("targetName").value=""; $("notes").value="";
+        refreshCmds();
+      }
+    });
+
+    // keyboard shortcuts
+    document.addEventListener("keydown", (e)=>{
+      if(e.target && (e.target.tagName==="INPUT" || e.target.tagName==="TEXTAREA")) return;
+      if(e.key === "/"){ e.preventDefault(); $("q").focus(); }
+      if(e.key.toLowerCase() === "t"){ $("themeBtn").click(); }
+      if(e.key.toLowerCase() === "c"){ $("q").value=""; $("q").focus(); }
+    });
+
+    // status
+    try{ localStorage.setItem("__test","1"); localStorage.removeItem("__test"); $("status").textContent="localStorage: OK"; }
+    catch{ $("status").textContent="localStorage: BLOCKED"; }
+  </script>
+</body>
+</html>
+
