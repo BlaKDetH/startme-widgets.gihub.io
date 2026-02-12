@@ -1,0 +1,47 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Recon Panel</title>
+  <style>
+    body{margin:0;font:14px system-ui;background:#0b0f14;color:#e8eef6}
+    .box{padding:14px}
+    input{width:100%;padding:10px;border-radius:12px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.06);color:#e8eef6;outline:none}
+    .grid{margin-top:10px;display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+    button{padding:10px;border-radius:12px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.08);color:#e8eef6;cursor:pointer}
+    button:hover{filter:brightness(1.08)}
+    .hint{opacity:.7;font-size:12px;margin-top:8px}
+  </style>
+</head>
+<body>
+  <div class="box">
+    <input id="q" placeholder="domain, IP, keyword… (Enter = Google dork)" />
+    <div class="grid">
+      <button onclick="go('https://www.google.com/search?q=%s')">Google</button>
+      <button onclick="go('https://duckduckgo.com/?q=%s')">DuckDuckGo</button>
+      <button onclick="go('https://www.shodan.io/search?query=%s')">Shodan</button>
+      <button onclick="go('https://search.censys.io/search?resource=hosts&q=%s')">Censys</button>
+      <button onclick="go('https://crt.sh/?q=%s')">crt.sh</button>
+      <button onclick="go('https://www.virustotal.com/gui/search/%s')">VirusTotal</button>
+      <button onclick="go('https://github.com/search?q=%s')">GitHub</button>
+      <button onclick="go('https://www.exploit-db.com/search?q=%s')">Exploit-DB</button>
+    </div>
+    <div class="hint">Tip: type <b>example.com</b> or <b>10.10.10.10</b>. Works great inside Start.me embed.</div>
+  </div>
+
+<script>
+  const q = document.getElementById('q');
+  q.addEventListener('keydown', e=>{
+    if(e.key==='Enter') go('https://www.google.com/search?q=%s%20site%3A%s');
+  });
+
+  function go(tpl){
+    const s = q.value.trim();
+    if(!s) return;
+    const u = tpl.replaceAll('%s', encodeURIComponent(s));
+    window.open(u, '_blank', 'noopener');
+  }
+</script>
+</body>
+</html>
